@@ -11,17 +11,13 @@
     <div id="map" style="width:100%;height:600px;"></div>
     <!-- <code id="snippet" class="snippet"></code> -->
 <script id="code">
-var GTA5MapTypeOption = function(opts) {
+var ZeldaMapTypeOption = function(opts) {
     var options = $.extend(this, opts || {});
 
-    // this.tileSet = "http://gta-5-map.com/"+ this.type +"/{z}-{x}_{y}.png";
-    this.tileSet = "http://oyster.ignimgs.com/ignmedia/wikimaps/the-legend-of-zelda-breath-of-the-wild/hyrule-botw/{z}/{x}-{y}.jpg";
-
-
-    // tilesets:           ["http:\/\/oyster.ignimgs.com\/ignmedia\/wikimaps\/the-legend-of-zelda-breath-of-the-wild\/hyrule-botw\/{z}\/{x}-{y}.jpg"],
+    this.tileSet = "./map/{z}/{z}_{x}_{y}.png";
 };
-GTA5MapTypeOption.prototype = {
-    constructor: GTA5MapTypeOption,
+ZeldaMapTypeOption.prototype = {
+    constructor: ZeldaMapTypeOption,
 
     name: '',
     type: '',
@@ -29,7 +25,8 @@ GTA5MapTypeOption.prototype = {
     minZoom: 1,
     maxZoom: 6,
     tileSize: new N.Size(256, 256),
-    TRANSPARENT_URL: './img/example/dot.gif',
+    //TRANSPARENT_URL: './img/example/dot.gif',
+    TRANSPARENT_URL: './map/blank.png',
     tileRanges: [1, 2, 4, 8, 16, 32],
 
     getName: function() {
@@ -49,10 +46,10 @@ GTA5MapTypeOption.prototype = {
     }]
 };
 
-var gtaNormal = new naver.maps.ImageMapType(new GTA5MapTypeOption({ name:"Atlas", type: "Tiles_ATLAS" })),
-    gtaSatellite = new naver.maps.ImageMapType(new GTA5MapTypeOption({ name:"Satellite", type: "Tiles_SAT", darktheme: true})),
-    gtaRoad = new naver.maps.ImageMapType(new GTA5MapTypeOption({ name:"Road", type: "Tiles_ROAD"})),
-    gtaUV = new naver.maps.ImageMapType(new GTA5MapTypeOption({ name:"UV Invert", type: "Tiles_UV"}));
+var gtaNormal = new naver.maps.ImageMapType(new ZeldaMapTypeOption({ name:"Atlas", type: "Tiles_ATLAS" })),
+    gtaSatellite = new naver.maps.ImageMapType(new ZeldaMapTypeOption({ name:"Satellite", type: "Tiles_SAT", darktheme: true})),
+    gtaRoad = new naver.maps.ImageMapType(new ZeldaMapTypeOption({ name:"Road", type: "Tiles_ROAD"})),
+    gtaUV = new naver.maps.ImageMapType(new ZeldaMapTypeOption({ name:"UV Invert", type: "Tiles_UV"}));
 
 var map = new naver.maps.Map('map', {
     center: new naver.maps.LatLng(47.90161299396793, -55.107421875),
