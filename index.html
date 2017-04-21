@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<script
+  src="https://code.jquery.com/jquery-1.12.4.js"
+  integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU="
+  crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://openapi.map.naver.com/openapi/v3/maps.js?clientId=xLAFPiYkaj237NyYk6CM&amp;submodules=panorama,geocoder,drawing,visualization"></script>
+</head>
+<body>
+    <div id="map" style="width:100%;height:600px;"></div>
+    <!-- <code id="snippet" class="snippet"></code> -->
+<script id="code">
+var GTA5MapTypeOption = function(opts) {
+    var options = $.extend(this, opts || {});
+
+    // this.tileSet = "http://gta-5-map.com/"+ this.type +"/{z}-{x}_{y}.png";
+    this.tileSet = "http://oyster.ignimgs.com/ignmedia/wikimaps/the-legend-of-zelda-breath-of-the-wild/hyrule-botw/{z}/{x}-{y}.jpg";
+
+
+    // tilesets:           ["http:\/\/oyster.ignimgs.com\/ignmedia\/wikimaps\/the-legend-of-zelda-breath-of-the-wild\/hyrule-botw\/{z}\/{x}-{y}.jpg"],
+};
+GTA5MapTypeOption.prototype = {
+    constructor: GTA5MapTypeOption,
+
+    name: '',
+    type: '',
+    projection: naver.maps.EPSG3857,
+    minZoom: 1,
+    maxZoom: 6,
+    tileSize: new N.Size(256, 256),
+    TRANSPARENT_URL: './img/example/dot.gif',
+    tileRanges: [1, 2, 4, 8, 16, 32],
+
+    getName: function() {
+        return this.name;
+    },
+
+    onerror: function(tileImg) {
+        tileImg.src = this.TRANSPARENT_URL;
+    },
+
+    provider: [{
+        title: 'Rockstar Games',
+        link: 'http://www.rockstargames.com'
+    }, {
+        title: '/gta-5-map.com',
+        link: 'http://gta-5-map.com'
+    }]
+};
+
+var gtaNormal = new naver.maps.ImageMapType(new GTA5MapTypeOption({ name:"Atlas", type: "Tiles_ATLAS" })),
+    gtaSatellite = new naver.maps.ImageMapType(new GTA5MapTypeOption({ name:"Satellite", type: "Tiles_SAT", darktheme: true})),
+    gtaRoad = new naver.maps.ImageMapType(new GTA5MapTypeOption({ name:"Road", type: "Tiles_ROAD"})),
+    gtaUV = new naver.maps.ImageMapType(new GTA5MapTypeOption({ name:"UV Invert", type: "Tiles_UV"}));
+
+var map = new naver.maps.Map('map', {
+    center: new naver.maps.LatLng(47.90161299396793, -55.107421875),
+    zoom: 2,
+    mapTypes: new naver.maps.MapTypeRegistry({
+        'atlas': gtaNormal,
+        'satellite': gtaSatellite,
+        'road': gtaRoad,
+        'uv': gtaUV
+    }),
+    mapTypeId: 'atlas',
+    background: "#0fa8d2",
+    mapTypeControl: true,
+    mapTypeControlOptions: {
+        style: naver.maps.MapTypeControlStyle.DROPDOWN
+    }
+});
+
+naver.maps.Event.addListener(map, 'mapTypeId_changed', function(mapTypeId) {
+    var bgColor = "#0fa8d2";
+
+    switch (mapTypeId) {
+        case 'satellite':
+            bgColor = "#143d6b";
+            break;
+        case 'road':
+            bgColor = "#1862ad";
+            break;
+        case 'uv':
+            bgColor = "#f5e8bb";
+            break;
+    }
+
+    map.setOptions("background", bgColor);
+});
+</script>
+</body>
+</html>
