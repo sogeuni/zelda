@@ -1,0 +1,29 @@
+<script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
+<script>
+  var auth;
+
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyCIKZLOCf2X25EcdVRbzjHYhuh5W5uNZvA",
+    authDomain: "zelda-1492739821588.firebaseapp.com",
+    databaseURL: "https://zelda-1492739821588.firebaseio.com",
+    projectId: "zelda-1492739821588",
+    storageBucket: "zelda-1492739821588.appspot.com",
+    messagingSenderId: "142131556390"
+  };
+  firebase.initializeApp(config);
+
+  auth = firebase.auth();
+  var authProvider = new firebase.auth.GoogleAuthProvider();
+
+
+  //인증여부
+  auth.onAuthStateChanged(function(user){
+    if(user){ //인증성공
+      console.log(user);
+      console.log("success");
+    }else{//인증실패
+      auth.signInWithPopup(authProvider);
+    }
+  });
+</script>

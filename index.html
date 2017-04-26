@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <script
   src="https://code.jquery.com/jquery-1.12.4.js"
   integrity="sha256-Qw82+bXyGq6MydymqBxNPYTaUXXq7c8v3CwiYwLLNXU="
@@ -10,49 +11,86 @@
 <body>
     <div id="map" style="width:600px;height:600px;"></div>
 <script>
-var BOTWMapTypeOption = function(name, type) {
-    this.name = name;
-    this.type = type;
-};
-BOTWMapTypeOption.prototype = {
-    constructor: BOTWMapTypeOption,
+// var BOTWMapTypeOption = function(name, type) {
+//     this.name = name;
+//     this.type = type;
+// };
+// BOTWMapTypeOption.prototype = {
+//     constructor: BOTWMapTypeOption,
 
-    name: '',
-    type: '',
-    projection: naver.maps.EPSG3857,
-    minZoom: 1,
-    maxZoom: 6,
-    tileSize: new naver.maps.Size(256, 256),
-    TRANSPARENT_URL: 'http://static.naver.net/maps/dot.gif',
-    tileRanges: [1, 4, 7, 15, 31, 63],
+//     name: '',
+//     type: '',
+//     projection: naver.maps.EPSG3857,
+//     minZoom: 1,
+//     maxZoom: 7,
+//     tileSize: new naver.maps.Size(256, 256),
+//     TRANSPARENT_URL: 'http://static.naver.net/maps/dot.gif',
+//     tileRanges: [1, 4, 7, 15, 31, 63, 120],
 
-    getName: function() {
-        return this.name;
-    },
+//     getName: function() {
+//         return this.name;
+//     },
 
-    getTileUrl: function(x, y, z) {
-        var tileRange = this.tileRanges[z - 1];
+//     getTileUrl: function(x, y, z) {
+//         var tileRange = this.tileRanges[z - 1];
 
-        if ((x >=0 && x < tileRange) && (y >=0 && y < tileRange)) {
-            return './map/'+(z-1)+'/'+(z-1)+'_'+x+'_'+y+".png";
-        } else {
-            return this.TRANSPARENT_URL;
-        }
-    },
+//         if ((x >=0 && x < tileRange) && (y >=0 && y < tileRange)) {
+//             return './map/'+(z-1)+'/'+(z-1)+'_'+x+'_'+y+".png";
+//         } else {
+//             return this.TRANSPARENT_URL;
+//         }
+//     },
 
-    onerror: function(tileImg) {
-        tileImg.src = this.TRANSPARENT_URL;
-    }
-};
+//     onerror: function(tileImg) {
+//         tileImg.src = this.TRANSPARENT_URL;
+//     }
+// };
 
-var map = new naver.maps.Map('map', {
-    center: new naver.maps.LatLng(74.92514151088395, -127.880859375),
-    zoom: 4,
-    mapTypes: new naver.maps.MapTypeRegistry({
-        "Atlas": new naver.maps.ImageMapType(new BOTWMapTypeOption("Atlas", "Tiles_ATLAS")),
-        // "Satellite": new naver.maps.ImageMapType(new BOTWMapTypeOption("Satellite", "Tiles_SAT")),
-    })
+// var map = new naver.maps.Map('map', {
+//     center: new naver.maps.LatLng(74.92514151088395, -127.880859375),
+//     zoom: 5,
+//     mapTypes: new naver.maps.MapTypeRegistry({
+//         "Atlas": new naver.maps.ImageMapType(new BOTWMapTypeOption("Atlas", "Tiles_ATLAS")),
+//         // "Satellite": new naver.maps.ImageMapType(new BOTWMapTypeOption("Satellite", "Tiles_SAT")),
+//     })
+// });
+
+var HOME_PATH = window.HOME_PATH || '.';
+
+var cityhall = new naver.maps.LatLng(37.5666805, 126.9784147),
+    map = new naver.maps.Map('map', {
+        center: cityhall.destinationPoint(0, 500),
+        zoom: 10
+    }),
+    marker = new naver.maps.Marker({
+        map: map,
+        position: cityhall
+    });
+
+var contentString = [
+        '<div class="iw_inner">',
+        '   <h3>서울특별시청</h3>',
+        '   <p>서울특별시 중구 태평로1가 31 | 서울특별시 중구 세종대로 110 서울특별시청<br />',
+        '       <img src="'+ HOME_PATH +'/img/example/hi-seoul.jpg" width="55" height="55" alt="서울시청" class="thumb" /><br />',
+        '       02-120 | 공공,사회기관 &gt; 특별,광역시청<br />',
+        '       <a href="http://www.seoul.go.kr" target="_blank">www.seoul.go.kr/</a>',
+        '   </p>',
+        '</div>'
+    ].join('');
+
+var infowindow = new naver.maps.InfoWindow({
+    content: contentString
 });
+
+naver.maps.Event.addListener(marker, "click", function(e) {
+    if (infowindow.getMap()) {
+        infowindow.close();
+    } else {
+        infowindow.open(map, marker);
+    }
+});
+
+infowindow.open(map, marker);
 
 map.setMapTypeId("Atlas");
 </script>
