@@ -1,6 +1,6 @@
 <html>
 <head>
-	
+  
 </head>
 <body>
 
@@ -25,28 +25,50 @@ info
   };
   firebase.initializeApp(config);
 
+  var allowedBounds;
+  var map;
+  var lastValidCenter;
+
+  var tileIndex = {
+      "3": { xmin: 1, xmax: 6, ymin: 1, ymax: 6 },
+      "4": { xmin: 2, xmax: 12, ymin: 3, ymax: 12 },
+      "5": { xmin: 4, xmax: 27, ymin: 6, ymax: 25 },
+      "6": { xmin: 8, xmax: 55, ymin: 12, ymax: 51 },
+      "7": { xmin: 17, xmax: 110, ymin: 24, ymax: 103 }
+    };
+
+  function tileExists(z, x, y) {
+    var obj = tileIndex[String(z)];
+    return (x >= obj.xmin && x <= obj.xmax && y >= obj.ymin && y <= obj.ymax);
+  }
+
   function initMap() {
-    var map = new google.maps.Map(document.getElementById('map'), {
+    allowedBounds = new google.maps.LatLngBounds(
+      new google.maps.LatLng(-72, -130),
+      new google.maps.LatLng(72, 130)
+    );
+
+    map = new google.maps.Map(document.getElementById('map'), {
       center: {lat: 0, lng: 0},
       zoom: 3,
       streetViewControl: false,
       mapTypeControlOptions: {
         mapTypeIds: ['botw']
-      }
+      },
+      backgroundColor: '#000000'
     });
 
     var botwMapType = new google.maps.ImageMapType({
       getTileUrl: function(coord, zoom) {
-          var bound = Math.pow(2, zoom);
-          // return 'http://mw1.google.com/mw-planetary/lunar/lunarmaps_v1/clem_bw' +
-          //     '/' + zoom + '/' + normalizedCoord.x + '/' +
-          //     (bound - normalizedCoord.y - 1) + '.jpg';
-          return './map/'+zoom+'/'+zoom+'_'+coord.x+'_'+coord.y+".png";
+        if (tileExists(zoom, coord.x, coord.y)) {
+          return './map/'+zoom+'/'+zoom+'_'+coord.x+'_'+coord.y+'.png';
+        } else {
+          return './map/blank.png'
+        }
       },
       tileSize: new google.maps.Size(256, 256),
       maxZoom: 7,
-      minZoom: 0,
-      // radius: 1738000,
+      minZoom: 3,
       name: 'Botw'
     });
 
@@ -56,6 +78,38 @@ info
     map.addListener('click', function(e) {
       alert(e.latLng);
     });
+
+    lastValidCenter = map.getCenter();
+    
+    google.maps.event.addListener(map, 'center_changed', function() {
+      if (allowedBounds.contains(map.getCenter())) {
+          // still within valid bounds, so save the last valid position
+          lastValidCenter = map.getCenter();
+          return; 
+      }
+
+        map.panTo(lastValidCenter);
+    });
+  }
+
+  function checkBounds() {    
+    if(! allowedBounds.contains(map.getCenter())) {
+      var C = map.getCenter();
+      var X = C.lng();
+      var Y = C.lat();
+
+      var AmaxX = allowedBounds.getNorthEast().lng();
+      var AmaxY = allowedBounds.getNorthEast().lat();
+      var AminX = allowedBounds.getSouthWest().lng();
+      var AminY = allowedBounds.getSouthWest().lat();
+
+      if (X < AminX) {X = AminX;}
+      if (X > AmaxX) {X = AmaxX;}
+      if (Y < AminY) {Y = AminY;}
+      if (Y > AmaxY) {Y = AmaxY;}
+
+      map.setCenter(new google.maps.LatLng(Y,X));
+    }
   }
 
   function toggleSignIn() {
