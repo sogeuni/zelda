@@ -15,12 +15,65 @@ info
 
 <script src="//www.gstatic.com/firebasejs/3.6.2/firebase.js"></script>
 <script async defer src="//maps.googleapis.com/maps/api/js?key=AIzaSyCIKZLOCf2X25EcdVRbzjHYhuh5W5uNZvA&callback=initMap"></script>
+<script src="./fb.js"></script>
 <script src="./zeldamap.js"></script>
+
 <script>
+function sign() {
+  toggleSignIn(function(msg) {
+    alert(msg);
+  }, function(e) {
+    console.log(e);
+  });
+}
+
+function callback(user) {
+  if (user) {
+    console.log(user);
+  } else {
+    console.log("logout");
+  }
+}
+
 window.onload = function() {
-  initApp();
+  document.getElementById('sign-in').addEventListener('click', sign, false);
+  setCallback(callback);
+
+  //Promise 선언
+var _promise = function (param) {
+
+  return new Promise(function (resolve, reject) {
+
+    // 비동기를 표현하기 위해 setTimeout 함수를 사용 
+    window.setTimeout(function () {
+
+      // 파라메터가 참이면, 
+      if (param) {
+
+        // 해결됨 
+        resolve("해결 완료");
+      }
+
+      // 파라메터가 거짓이면, 
+      else {
+
+        // 실패 
+        reject(Error("실패!!"));
+      }
+    }, 3000);
+  });
 };
 
+//Promise 실행
+_promise(false)
+.then(function (text) {
+  // 성공시
+  console.log(text);
+}, function (error) {
+  // 실패시 
+  console.error(error);
+});
+};
 </script>
 </body>
 </html>
